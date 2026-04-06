@@ -8,3 +8,6 @@ directory = "./dist"
 binding = "DB"
 database_name = "ace-leads"
 database_id = "19643c50-edef-4196-aeab-9e2db657fc9d"
+
+[vars]
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAAC1egCP_ntt5kef_"

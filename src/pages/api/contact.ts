@@ -1,11 +1,10 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   try {
-    const runtime = (locals as any).runtime;
-    const env = runtime?.env || {};
     const formData = await request.formData();
 
     // Honeypot check
@@ -29,7 +28,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Validate Turnstile
-    const turnstileSecret = env.TURNSTILE_SECRET_KEY;
+    const turnstileSecret = (env as any).TURNSTILE_SECRET_KEY;
     if (turnstileSecret) {
       const turnstileResult = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
         method: 'POST',
@@ -50,7 +49,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
 
     // Store in D1
-    const db = env.DB;
+    const db = (env as any).DB;
     if (db) {
       await db.prepare(
         'INSERT INTO leads (name, email, subject, message, ip, created_at) VALUES (?, ?, ?, ?, ?, ?)'
